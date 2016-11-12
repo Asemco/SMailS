@@ -7,9 +7,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.provider.ContactsContract;
 import android.provider.Telephony;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsMessage;
@@ -17,27 +20,20 @@ import android.util.Log;
 
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-/**
- * Created by Crasy on 2016-11-10.
- */
-
 public class SMSBroadcastReceiver extends BroadcastReceiver {
 
 
-    SmsMessage[] smsMessage;
-    String message;
-    JSONObject smsData;
+    private SmsMessage[] smsMessage;
+    private String message;
+    private JSONObject smsData;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
         /*Log.d(Constants.SMSBROADCASTRECEIVER_LOG_TAG, "We've received an " + intent.getAction() + " intent.");*/ // For Debugging
         SharedPreferences sharedPreferences = context.getSharedPreferences(MainActivity.class.getSimpleName(), Context.MODE_PRIVATE);
         // A Notification Builder is used to make our Notification.
@@ -52,12 +48,13 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
             for (SmsMessage sms : smsMessage) {
                 message = message + sms.getMessageBody(); // Create a single string for the SMS Message.
             }
+            String contactName = getContactName(context, smsMessage[0].getOriginatingAddress());
 
             smsData = new JSONObject();
             try {
                 // Store the pertinent information as a JSONObject
                 smsData.put("name", smsMessage[0].getOriginatingAddress() + "@yourphone.com");
-                smsData.put("subject", "You've received a Text from " + smsMessage[0].getOriginatingAddress() + "! - SMailS");
+                smsData.put("subject", "You've received a Text from " + contactName + "! - SMailS");
                 smsData.put("body", message);
                 smsData.put("to", sharedPreferences.getString("EMAIL", ""));
             /*Log.d(Constants.SMSBROADCASTRECEIVER_LOG_TAG, sharedPreferences.getString("EMAIL", "") + " OK?");*/ // For Debugging
@@ -105,12 +102,12 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
                 // Attempts to send the E-Mail through an Async method
                 DownloadWebPageTask task = new DownloadWebPageTask();
                 try {
-                    String result = "";
+                    String result;
                     result = task.execute("https://script.google.com/macros/s/AKfycbwsEvRTeLIaQIqSZ8yyUiclV-W5VYPprErxo-YkxDld6RafFntF/exec").get();
                     if (!result.isEmpty()) {
                         notifc.setCategory(Notification.CATEGORY_MESSAGE);
                         notifc.setSmallIcon(R.drawable.peco);
-                        notifc.setContentTitle("SMailS E-mailed Successfully!");
+                        notifc.setContentTitle("SMailS SMS to E-Mail was successful!");
                         notifc.setContentText("From " + smsMessage[0].getOriginatingAddress() + " to " + sharedPreferences.getString("EMAIL", ""));
                         smsMessage = null;
                         message = null;
@@ -150,9 +147,22 @@ public class SMSBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
+    private String getContactName(Context context, String originatingAddress) {
+
+        String contactName = "";
+        Uri lookupUri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(originatingAddress));
+        try (Cursor c = context.getContentResolver().query(lookupUri, new String[]{ContactsContract.Data.DISPLAY_NAME}, null, null, null)) {
+            c.moveToFirst();
+            contactName = c.getString(0);
+        } catch (Exception e) {
+            contactName = originatingAddress;
+        }
+        return contactName;
+    }
+
     // Returns the To E-Mail address if successful.
     private String getSMSSendResult(String emailUrl) {
-        String response = "";
+        String response;
         try {
             URL url = new URL(emailUrl);
             try {

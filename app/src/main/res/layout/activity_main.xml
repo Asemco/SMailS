@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.sheridan.bestteam.newandroidassignment.MainActivity">
+    tools:context=".MainActivity">
 
     <EditText
         android:layout_width="wrap_content"
@@ -20,11 +20,11 @@
         android:layout_alignParentEnd="true"
         android:layout_toEndOf="@+id/txtEmail"
         android:singleLine="true"
-        android:hint="example@example.com"
+        android:hint="@string/emailExample"
         android:textSize="16sp" />
 
     <ToggleButton
-        android:text="ToggleButton"
+        android:text="@string/togglebutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/eTxtEmail"
@@ -32,7 +32,7 @@
         android:id="@+id/togBtnReply" />
 
     <TextView
-        android:text="Allow replies through E-Mail:"
+        android:text="@string/txtReply"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/txtReply"
@@ -43,14 +43,14 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Your E-Mail:"
+        android:text="@string/lblEmail"
         android:id="@+id/txtEmail"
         android:layout_alignBaseline="@+id/eTxtEmail"
         android:layout_alignBottom="@+id/eTxtEmail"
         android:layout_alignParentStart="true" />
 
     <TextView
-        android:text="Enable Text to E-mail:"
+        android:text="@string/txtEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/textView2"
@@ -59,7 +59,7 @@
         android:layout_marginTop="41dp" />
 
     <ToggleButton
-        android:text="ToggleButton"
+        android:text="@string/togglebutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/togBtnEnable"

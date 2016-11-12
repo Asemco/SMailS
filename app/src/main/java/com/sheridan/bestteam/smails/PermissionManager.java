@@ -4,11 +4,7 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 
-/**
- * Created by Crasy on 2016-11-10.
- */
-
-public class PermissionManager {
+class PermissionManager {
 
     public static void checkPermissions(Activity activity, String permission, int requestCode){
         if (ActivityCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {

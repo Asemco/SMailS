@@ -1,13 +1,11 @@
 package com.sheridan.bestteam.smails;
 
+import android.annotation.SuppressLint;
 import android.app.IntentService;
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-/**
- * Created by Crasy on 2016-11-10.
- */
+@SuppressLint("Registered")
 public class SMSEmailService extends IntentService  {
 
     public SMSEmailService() {

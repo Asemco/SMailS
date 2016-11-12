@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">SMailS</string>
+    <string name="emailExample">example@example.com</string>
+    <string name="togglebutton">ToggleButton</string>
+    <string name="txtReply">Allow replies through E-Mail:</string>
+    <string name="lblEmail">Your E-Mail:</string>
+    <string name="txtEmail">Enable Text to E-mail:</string>
 </resources>
